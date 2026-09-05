@@ -1,0 +1,613 @@
+<title>Схема лампы-космонавта</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F3F4F2;
+    --ink: #1C2126;
+    --muted: #66707A;
+    --rule: #CBD1D6;
+    --well: #E8EBE9;
+    --amber: #C06F12;
+    --amber-soft: #F3E3C8;
+    --red: #CF3F3F;
+    --green: #258A50;
+    --blue: #2F5FD0;
+    --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --cond: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #15181B;
+      --ink: #E4E7EA;
+      --muted: #98A3AD;
+      --rule: #2E353C;
+      --well: #1E2326;
+      --amber: #E9A24A;
+      --amber-soft: #3A2C16;
+      --red: #EE6A6A;
+      --green: #4FC27C;
+      --blue: #7A9CF2;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #15181B;
+    --ink: #E4E7EA;
+    --muted: #98A3AD;
+    --rule: #2E353C;
+    --well: #1E2326;
+    --amber: #E9A24A;
+    --amber-soft: #3A2C16;
+    --red: #EE6A6A;
+    --green: #4FC27C;
+    --blue: #7A9CF2;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0;
+  }
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 72px;
+  }
+  h1, h2 {
+    font-family: var(--cond);
+    font-weight: 600;
+    text-wrap: balance;
+    letter-spacing: 0.005em;
+    margin: 0;
+  }
+  h1 { font-size: 34px; line-height: 1.1; }
+  h2 { font-size: 22px; line-height: 1.2; margin-top: 48px; padding-bottom: 8px; border-bottom: 1.5px solid var(--ink); }
+  p { max-width: 68ch; margin: 12px 0 0; }
+  .lede { color: var(--muted); margin-top: 6px; }
+  code, kbd { font-family: var(--mono); font-size: 0.92em; }
+  code { background: var(--well); padding: 1px 5px; border-radius: 3px; }
+  pre {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.55;
+    background: var(--well);
+    border-left: 3px solid var(--amber);
+    padding: 14px 16px;
+    margin: 12px 0 0;
+    overflow-x: auto;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+
+  /* answers strip */
+  .answers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0 32px;
+    margin-top: 28px;
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+  }
+  .answers > div { padding: 14px 0 16px; }
+  .answers > div + div { border-left: 1px solid var(--rule); padding-left: 24px; }
+  @media (max-width: 640px) { .answers > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); } }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .answer { font-family: var(--cond); font-size: 22px; font-weight: 600; margin-top: 4px; }
+  .answers p { font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+  /* figure */
+  figure { margin: 20px 0 0; }
+  .scroll { overflow-x: auto; }
+  .schem { display: block; width: 100%; max-width: 900px; height: auto; min-width: 640px; color: var(--ink); }
+  .schem text { font-family: var(--mono); font-size: 12px; fill: currentColor; }
+  .schem .lbl { font-size: 11px; }
+  .schem .mut { fill: var(--muted); }
+  .schem .ttl { font-family: var(--cond); font-size: 14px; font-weight: 600; }
+  .schem .comp { fill: var(--paper); stroke: currentColor; stroke-width: 1.5; }
+  .schem .wire { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; }
+  .schem .rail { fill: none; stroke: var(--amber); stroke-width: 2.5; }
+  .schem .railtxt { fill: var(--amber); font-weight: 500; }
+  .schem .dash { fill: none; stroke: var(--amber); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  .schem .dot { fill: currentColor; }
+  .schem .raildot { fill: var(--amber); }
+  .schem .pin { fill: var(--paper); stroke: currentColor; stroke-width: 1.5; }
+  .schem .r { fill: var(--red); } .schem .g { fill: var(--green); } .schem .b { fill: var(--blue); }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 10px; max-width: 70ch; }
+
+  /* tables */
+  table { border-collapse: collapse; width: 100%; margin-top: 14px; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 0 12px 8px 0; border-bottom: 1px solid var(--ink); }
+  td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  td:first-child { white-space: nowrap; }
+  tr.group td { padding-top: 18px; border-bottom: 1px solid var(--ink); font-family: var(--cond); font-weight: 600; font-size: 16px; }
+  tr.group td .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+  .sw.r { background: var(--red); } .sw.g { background: var(--green); } .sw.b { background: var(--blue); } .sw.m { background: var(--ink); } .sw.p { background: var(--amber); }
+  .tbl { overflow-x: auto; }
+
+  /* pinouts */
+  .pinouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; margin-top: 16px; }
+  .pinouts h3 { font-family: var(--cond); font-size: 17px; font-weight: 600; margin: 0 0 8px; }
+  .to220 { display: block; width: 100%; max-width: 300px; height: auto; color: var(--ink); }
+  .to220 text { font-family: var(--mono); font-size: 12px; fill: currentColor; }
+  .to220 .body { fill: var(--well); stroke: currentColor; stroke-width: 1.5; }
+  .to220 .leg { fill: var(--paper); stroke: currentColor; stroke-width: 1.5; }
+  .pinouts ol, .pinouts ul { margin: 8px 0 0; padding-left: 20px; font-size: 14px; }
+  .pinouts li { margin-top: 4px; }
+  .strip { display: flex; gap: 6px; margin-top: 10px; align-items: flex-end; }
+  .strip span {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border: 1.5px solid var(--ink); border-radius: 3px;
+    font-family: var(--mono); font-weight: 500; font-size: 14px; background: var(--paper);
+  }
+  .strip span.v { background: var(--amber-soft); border-color: var(--amber); color: var(--amber); }
+  .strip .cap { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: 10px; align-self: center; }
+
+  /* steps */
+  ol.steps { margin: 12px 0 0; padding-left: 0; list-style: none; counter-reset: step; max-width: 72ch; }
+  ol.steps li { counter-increment: step; display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  ol.steps li::before { content: counter(step); font-family: var(--cond); font-weight: 600; font-size: 22px; line-height: 1; color: var(--amber); padding-top: 2px; }
+  ol.steps b { font-weight: 500; }
+  ol.steps p { margin-top: 4px; font-size: 14px; }
+  ol.steps pre { margin-top: 8px; }
+
+  ul.check { margin: 12px 0 0; padding-left: 0; list-style: none; max-width: 72ch; }
+  ul.check li { padding: 7px 0 7px 30px; position: relative; border-bottom: 1px solid var(--rule); font-size: 14.5px; }
+  ul.check li::before { content: ""; position: absolute; left: 2px; top: 10px; width: 14px; height: 14px; border: 1.5px solid var(--ink); border-radius: 2px; }
+
+  .note { border-left: 3px solid var(--amber); padding: 8px 14px; margin-top: 14px; font-size: 14px; max-width: 70ch; background: var(--amber-soft); }
+  .foot { margin-top: 44px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 12px; }
+  a { color: inherit; }
+  a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+</style>
+
+<main>
+  <div class="eyebrow">astronaut-lamp · драйвер на макетке · 04.09.2026</div>
+  <h1>Схема лампы-космонавта</h1>
+  <p class="lede">Три ШИМ-канала на RGB-светодиод с общим анодом и один ключ на мотор проектора. Собирается на breadboard, корпус потом.</p>
+
+  <div class="answers">
+    <div>
+      <div class="eyebrow">Плата</div>
+      <div class="answer">ESP32-WROOM-32, та что заказана</div>
+      <p>NodeMCU электрически подошла бы (логика тоже 3.3 В, IRLZ44N от неё открывается), но у ESP8266 нет аппаратного ШИМ: HAA крутит его программно, максимум 2 кГц, тем же ядром, что держит Wi-Fi и HomeKit. Это риск мерцания, ради яркости всё и затевалось. У ESP32 ШИМ аппаратный (LEDC, 5 кГц по умолчанию). NodeMCU остаётся под CO₂-птичку.</p>
+    </div>
+    <div>
+      <div class="eyebrow">Прошивка</div>
+      <div class="answer">Сначала, на голой плате</div>
+      <p>Прошивать по USB надо без 5 В на VIN, а на пустой плате это само собой. Заодно проверяется, что плата живая, а конфиг правильный: уровни на GPIO меряются мультиметром ещё до того, как подключён хоть один транзистор. Подтяжки 10 кОм держат все ключи закрытыми при загрузке, так что порядок безопасен в обе стороны.</p>
+    </div>
+  </div>
+
+  <h2>Принципиальная схема</h2>
+  <figure>
+    <div class="scroll">
+    <svg class="schem" viewBox="0 0 900 700" role="img" aria-label="ESP32 через резисторы 220 Ом управляет затворами четырёх IRLZ44N по низкой стороне; три канала через балласты 5R6 и 3R3 идут на катоды RGB-светодиода с общим анодом на +5 В, четвёртый ключ коммутирует мотор проектора с обратным диодом 1N5819; по питанию 5 В стоит 1000 мкФ, все земли общие">
+      <defs>
+        <g id="gnd">
+          <path d="M0 0 V8 M-10 8 H10 M-6 13 H6 M-2 18 H2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </g>
+        <g id="nfet">
+          <path d="M0 30 H12 M12 20 V40" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M18 17 V25 M18 27 V33 M18 35 V43" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M18 21 H34 V0 M18 39 H34 V60 M34 30 V39" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M34 30 H26" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="18,30 27,26 27,34" fill="currentColor"/>
+        </g>
+      </defs>
+
+      <!-- +5 V rail -->
+      <line class="rail" x1="110" y1="70" x2="880" y2="70"/>
+      <text class="railtxt" x="110" y="56">+5 В · адаптер 5 В 2 А</text>
+      <text class="railtxt" x="880" y="56" text-anchor="end">+5 В</text>
+      <circle class="raildot" cx="110" cy="70" r="4"/>
+
+      <!-- C1 -->
+      <circle class="raildot" cx="330" cy="70" r="3"/>
+      <path class="wire" d="M330 70 V108"/>
+      <path class="wire" d="M316 110 H344" stroke-width="2.5"/>
+      <path class="wire" d="M316 121 H344" stroke-width="2.5"/>
+      <path class="wire" d="M330 121 V150"/>
+      <use href="#gnd" x="330" y="150"/>
+      <text x="306" y="114" text-anchor="end">+</text>
+      <text x="352" y="112">C1 1000 µF 16 В</text>
+      <text class="lbl mut" x="352" y="127">полоска (−) к GND</text>
+
+      <!-- ESP32 -->
+      <rect class="comp" x="60" y="200" width="200" height="440" rx="4"/>
+      <text class="ttl" x="160" y="232" text-anchor="middle">ESP32-WROOM-32</text>
+      <text class="mut" x="160" y="249" text-anchor="middle">DevKit</text>
+      <path class="dash" d="M160 70 V200"/>
+      <circle class="raildot" cx="160" cy="70" r="3"/>
+      <text x="160" y="216" text-anchor="middle" class="lbl">VIN / 5V</text>
+      <text class="lbl mut" x="168" y="128">только в корпусе,</text>
+      <text class="lbl mut" x="168" y="142">на столе не подключать</text>
+      <text class="lbl mut" x="72" y="392">micro-USB ← ноутбук</text>
+      <text class="lbl mut" x="72" y="406">на столе: питание</text>
+      <text class="lbl mut" x="72" y="420">и прошивка</text>
+      <text x="252" y="254" text-anchor="end">GPIO32</text>
+      <text x="252" y="354" text-anchor="end">GPIO25</text>
+      <text x="252" y="454" text-anchor="end">GPIO26</text>
+      <text x="252" y="554" text-anchor="end">GPIO27</text>
+      <text x="160" y="632" text-anchor="middle">GND</text>
+      <path class="wire" d="M160 640 V652"/>
+      <use href="#gnd" x="160" y="652"/>
+
+      <!-- Stage M, y=250 -->
+      <path class="wire" d="M260 250 H300"/>
+      <rect class="comp" x="300" y="244" width="50" height="12"/>
+      <text class="lbl" x="325" y="238" text-anchor="middle">220 Ω</text>
+      <path class="wire" d="M350 250 H430"/>
+      <circle class="dot" cx="390" cy="250" r="3"/>
+      <path class="wire" d="M390 250 V264"/>
+      <rect class="comp" x="384" y="264" width="12" height="30"/>
+      <path class="wire" d="M390 294 V306"/>
+      <use href="#gnd" x="390" y="306"/>
+      <text class="lbl" x="402" y="283">10 kΩ</text>
+      <use href="#nfet" x="430" y="220"/>
+      <path class="wire" d="M464 280 V290"/>
+      <use href="#gnd" x="464" y="290"/>
+      <text x="484" y="254">Q-M · IRLZ44N</text>
+      <path class="wire" d="M464 220 H560 M610 220 H750"/>
+      <rect class="comp" x="560" y="214" width="50" height="12"/>
+      <text class="lbl" x="585" y="208" text-anchor="middle">6R8 ← донор (R18)</text>
+      <circle class="dot" cx="700" cy="220" r="3"/>
+      <!-- motor -->
+      <circle class="raildot" cx="700" cy="70" r="3"/>
+      <path class="wire" d="M700 70 V120 M700 160 V220"/>
+      <circle class="comp" cx="700" cy="140" r="20"/>
+      <text class="ttl" x="700" y="145" text-anchor="middle">M</text>
+      <text x="676" y="136" text-anchor="end">мотор</text>
+      <text class="lbl mut" x="676" y="150" text-anchor="end">проектора, 2 провода</text>
+      <!-- diode -->
+      <circle class="raildot" cx="750" cy="70" r="3"/>
+      <path class="wire" d="M750 70 V133 M750 158 V220"/>
+      <path class="wire" d="M740 133 H760" stroke-width="2.5"/>
+      <polygon class="comp" points="740,158 760,158 750,134"/>
+      <text x="768" y="141">D1 1N5819</text>
+      <text class="lbl mut" x="768" y="156">полоска ↑ +5 В</text>
+
+      <!-- Stage R, y=350 -->
+      <path class="wire" d="M260 350 H300"/>
+      <rect class="comp" x="300" y="344" width="50" height="12"/>
+      <text class="lbl" x="325" y="338" text-anchor="middle">220 Ω</text>
+      <path class="wire" d="M350 350 H430"/>
+      <circle class="dot" cx="390" cy="350" r="3"/>
+      <path class="wire" d="M390 350 V364"/>
+      <rect class="comp" x="384" y="364" width="12" height="30"/>
+      <path class="wire" d="M390 394 V406"/>
+      <use href="#gnd" x="390" y="406"/>
+      <text class="lbl" x="402" y="383">10 kΩ</text>
+      <use href="#nfet" x="430" y="320"/>
+      <path class="wire" d="M464 380 V390"/>
+      <use href="#gnd" x="464" y="390"/>
+      <text x="484" y="354">Q-R · IRLZ44N</text>
+      <path class="wire" d="M464 320 H560"/>
+      <rect class="comp" x="560" y="314" width="50" height="12"/>
+      <text class="lbl" x="585" y="308" text-anchor="middle">5R6 ← донор</text>
+      <path class="wire" d="M610 320 H650 L740 420 H756"/>
+
+      <!-- Stage G, y=450 -->
+      <path class="wire" d="M260 450 H300"/>
+      <rect class="comp" x="300" y="444" width="50" height="12"/>
+      <text class="lbl" x="325" y="438" text-anchor="middle">220 Ω</text>
+      <path class="wire" d="M350 450 H430"/>
+      <circle class="dot" cx="390" cy="450" r="3"/>
+      <path class="wire" d="M390 450 V464"/>
+      <rect class="comp" x="384" y="464" width="12" height="30"/>
+      <path class="wire" d="M390 494 V506"/>
+      <use href="#gnd" x="390" y="506"/>
+      <text class="lbl" x="402" y="483">10 kΩ</text>
+      <use href="#nfet" x="430" y="420"/>
+      <path class="wire" d="M464 480 V490"/>
+      <use href="#gnd" x="464" y="490"/>
+      <text x="484" y="454">Q-G · IRLZ44N</text>
+      <path class="wire" d="M464 420 H560"/>
+      <rect class="comp" x="560" y="414" width="50" height="12"/>
+      <text class="lbl" x="585" y="408" text-anchor="middle">3R3 ← донор</text>
+      <path class="wire" d="M610 420 H650 L740 320 H756"/>
+
+      <!-- Stage B, y=550 -->
+      <path class="wire" d="M260 550 H300"/>
+      <rect class="comp" x="300" y="544" width="50" height="12"/>
+      <text class="lbl" x="325" y="538" text-anchor="middle">220 Ω</text>
+      <path class="wire" d="M350 550 H430"/>
+      <circle class="dot" cx="390" cy="550" r="3"/>
+      <path class="wire" d="M390 550 V564"/>
+      <rect class="comp" x="384" y="564" width="12" height="30"/>
+      <path class="wire" d="M390 594 V606"/>
+      <use href="#gnd" x="390" y="606"/>
+      <text class="lbl" x="402" y="583">10 kΩ</text>
+      <use href="#nfet" x="430" y="520"/>
+      <path class="wire" d="M464 580 V590"/>
+      <use href="#gnd" x="464" y="590"/>
+      <text x="484" y="554">Q-B · IRLZ44N</text>
+      <path class="wire" d="M464 520 H560"/>
+      <rect class="comp" x="560" y="514" width="50" height="12"/>
+      <text class="lbl" x="585" y="508" text-anchor="middle">3R3 ← донор</text>
+      <path class="wire" d="M610 520 H756"/>
+
+      <!-- RGB connector -->
+      <rect class="comp" x="760" y="236" width="80" height="300" rx="3"/>
+      <circle class="raildot" cx="870" cy="70" r="3"/>
+      <path class="rail" d="M870 70 V200 H800 V232" stroke-width="1.5"/>
+      <rect class="pin" x="796" y="232" width="8" height="8"/>
+      <rect class="pin" x="756" y="316" width="8" height="8"/>
+      <rect class="pin" x="756" y="416" width="8" height="8"/>
+      <rect class="pin" x="756" y="516" width="8" height="8"/>
+      <text class="ttl" x="800" y="262" text-anchor="middle">V</text>
+      <text class="lbl mut" x="800" y="277" text-anchor="middle">общий анод</text>
+      <text class="ttl" x="776" y="325">G</text>
+      <text class="ttl" x="776" y="425">R</text>
+      <text class="ttl" x="776" y="525">B</text>
+      <circle class="g" cx="822" cy="320" r="5"/>
+      <circle class="r" cx="822" cy="420" r="5"/>
+      <circle class="b" cx="822" cy="520" r="5"/>
+      <text x="800" y="558" text-anchor="middle">светодиод RGB</text>
+      <text class="lbl mut" x="800" y="573" text-anchor="middle">4 провода, V = общий анод</text>
+
+      <!-- legend -->
+      <line class="rail" x1="560" y1="636" x2="600" y2="636"/>
+      <text class="lbl" x="610" y="640">шина +5 В от адаптера</text>
+      <use href="#gnd" x="580" y="652"/>
+      <text class="lbl" x="610" y="664">общий GND: адаптер, ESP32, макетка</text>
+      <path class="dash" d="M560 686 H600"/>
+      <text class="lbl" x="610" y="690">подключается только при установке в корпус</text>
+    </svg>
+    </div>
+    <figcaption>ШИМ не инвертирован: «1» на затворе открывает ключ и зажигает канал. Линии R и G перекрещиваются, потому что на разъёме донора пины идут в порядке V G R B, а GPIO 25/26/27 назначены как R/G/B. Балласты подтверждены прозвонкой донора 04.09.2026: 5R6 в красном, 3R3 в зелёном и синем. В цепи мотора на доноре стоит R18 = 6.8 Ом (рядом с D1 и Q1), он переезжает в новый драйвер вместе с балластами.</figcaption>
+  </figure>
+
+  <h2>Соединения на breadboard</h2>
+  <p>Шина «+» макетки это +5 В от адаптера, шина «−» это общий GND. Ноги IRLZ44N считаются надписью к себе: 1 затвор, 2 сток, 3 исток.</p>
+  <div class="tbl">
+  <table>
+    <thead><tr><th>Откуда</th><th>Куда</th><th>Через что</th></tr></thead>
+    <tbody>
+      <tr class="group"><td colspan="3"><span class="sw p"></span>Питание</td></tr>
+      <tr><td>Адаптер +5 В</td><td>шина «+»</td><td>USB-кабель с разделанным концом или USB-breakout</td></tr>
+      <tr><td>Адаптер GND</td><td>шина «−»</td><td></td></tr>
+      <tr><td>ESP32 GND</td><td>шина «−»</td><td>обязательно, иначе GPIO не имеют общей точки с ключами</td></tr>
+      <tr><td>C1 1000 µF</td><td>«+» на шину «+», «−» (полоска) на шину «−»</td><td>рядом с местом входа питания</td></tr>
+      <tr><td>ESP32 VIN</td><td>никуда</td><td>на столе ESP32 питается от USB ноутбука</td></tr>
+
+      <tr class="group"><td colspan="3"><span class="sw r"></span>Канал R · GPIO25 · Q-R</td></tr>
+      <tr><td>GPIO25</td><td>затвор Q-R (нога 1)</td><td>220 Ω</td></tr>
+      <tr><td>Затвор Q-R</td><td>шина «−»</td><td>10 kΩ</td></tr>
+      <tr><td>Исток Q-R (нога 3)</td><td>шина «−»</td><td></td></tr>
+      <tr><td>Сток Q-R (нога 2)</td><td>провод R светодиода</td><td>балласт 5R6 с донора</td></tr>
+
+      <tr class="group"><td colspan="3"><span class="sw g"></span>Канал G · GPIO26 · Q-G</td></tr>
+      <tr><td>GPIO26</td><td>затвор Q-G (нога 1)</td><td>220 Ω</td></tr>
+      <tr><td>Затвор Q-G</td><td>шина «−»</td><td>10 kΩ</td></tr>
+      <tr><td>Исток Q-G (нога 3)</td><td>шина «−»</td><td></td></tr>
+      <tr><td>Сток Q-G (нога 2)</td><td>провод G светодиода</td><td>балласт 3R3 с донора</td></tr>
+
+      <tr class="group"><td colspan="3"><span class="sw b"></span>Канал B · GPIO27 · Q-B</td></tr>
+      <tr><td>GPIO27</td><td>затвор Q-B (нога 1)</td><td>220 Ω</td></tr>
+      <tr><td>Затвор Q-B</td><td>шина «−»</td><td>10 kΩ</td></tr>
+      <tr><td>Исток Q-B (нога 3)</td><td>шина «−»</td><td></td></tr>
+      <tr><td>Сток Q-B (нога 2)</td><td>провод B светодиода</td><td>балласт 3R3 с донора</td></tr>
+
+      <tr class="group"><td colspan="3"><span class="sw p"></span>Общий анод</td></tr>
+      <tr><td>Провод V светодиода (общий анод)</td><td>шина «+»</td><td>напрямую</td></tr>
+
+      <tr class="group"><td colspan="3"><span class="sw m"></span>Мотор · GPIO32 · Q-M</td></tr>
+      <tr><td>GPIO32</td><td>затвор Q-M (нога 1)</td><td>220 Ω</td></tr>
+      <tr><td>Затвор Q-M</td><td>шина «−»</td><td>10 kΩ</td></tr>
+      <tr><td>Исток Q-M (нога 3)</td><td>шина «−»</td><td></td></tr>
+      <tr><td>Сток Q-M (нога 2)</td><td>первый провод мотора</td><td>резистор 6R8 с донора (R18), как стоял в родной цепи мотора</td></tr>
+      <tr><td>Второй провод мотора</td><td>шина «+»</td><td>полярность мотора неважна, перестановка меняет направление вращения</td></tr>
+      <tr><td>D1 1N5819</td><td>полоска (катод) на шину «+», анод на сток Q-M</td><td>параллельно мотору</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note">Если DevKit оказался 38-контактным, на одну макетку он не встанет: положи его рядом и тяни к макетке dupont мама-папа. На 30-контактном DevKit V1 пины 32, 33, 25, 26, 27 идут подряд на одной стороне, сверь по шелкографии.</div>
+
+  <h2>Пинауты</h2>
+  <div class="pinouts">
+    <div>
+      <h3>IRLZ44N, корпус TO-220</h3>
+      <svg class="to220" viewBox="0 0 300 175" role="img" aria-label="TO-220 надписью к себе: слева направо затвор, сток, исток; металлическая спинка соединена со стоком">
+        <rect class="body" x="80" y="8" width="100" height="42" rx="3"/>
+        <circle cx="130" cy="26" r="6" fill="var(--paper)" stroke="currentColor" stroke-width="1.5"/>
+        <rect class="body" x="80" y="50" width="100" height="62"/>
+        <text x="130" y="86" text-anchor="middle" font-weight="500">IRLZ44N</text>
+        <rect class="leg" x="101" y="112" width="8" height="40"/>
+        <rect class="leg" x="126" y="112" width="8" height="40"/>
+        <rect class="leg" x="151" y="112" width="8" height="40"/>
+        <text x="105" y="168" text-anchor="middle" font-weight="500">G</text>
+        <text x="130" y="168" text-anchor="middle" font-weight="500">D</text>
+        <text x="155" y="168" text-anchor="middle" font-weight="500">S</text>
+        <text x="190" y="30" fill="var(--muted)">спинка = сток</text>
+        <text x="190" y="86" fill="var(--muted)">надписью к себе</text>
+      </svg>
+      <ol>
+        <li><b>G</b> затвор ← 220 Ω от GPIO, и 10 kΩ на GND</li>
+        <li><b>D</b> сток → нагрузка (балласт или мотор). Спинка тоже сток</li>
+        <li><b>S</b> исток → GND</li>
+      </ol>
+      <p style="font-size:14px;color:var(--muted)">Четыре TO-220 рядом на макетке: спинки не должны касаться друг друга, у каждого свой сток.</p>
+    </div>
+    <div>
+      <h3>Провода светодиода и мотора</h3>
+      <p style="font-size:14px;margin-top:0">Вилки срезаны (шаг 2.0 мм, dupont не входил). Концы зачистить на 5–6 мм, скрутить, залудить с флюсом: лужёный конец входит в макетку как ножка детали. Если провод толстый или лохматится, припаять его к штырьку от dupont.</p>
+      <div class="strip">
+        <span class="v">V</span><span>R</span><span>G</span><span>B</span>
+        <span class="cap">светодиод, 4 провода · V = +5 В, общий анод</span>
+      </div>
+      <div class="strip">
+        <span>M</span><span>M</span>
+        <span class="cap">мотор, 2 провода, полярность неважна</span>
+      </div>
+      <ul>
+        <li><b>Найти V.</b> Мультиметр в режим диода (▷|, предел 2K), красный щуп на один провод, чёрный по очереди на три остальных. Провод, при котором хотя бы один канал даёт число или светодиод тлеет, и есть V. Глухо на всех, переставить красный на следующий провод.</li>
+        <li><b>Различить R, G, B.</b> На ESP32 от USB: провод V на пин <code>5V/VIN</code> через 220 Ом, остальные по очереди на <code>GND</code>. Цвет виден глазом, ток около 13 мА, без балласта это безопасно. Подписать провода маркером или скотчем.</li>
+        <li>Балласты подтверждены прозвонкой: <code>5R6</code> (R13) в красный канал, <code>3R3</code> (R14, R12) в зелёный и синий.</li>
+        <li>Мотор: <code>6R8</code> (R18 с донора) в разрыв между стоком Q-M и проводом мотора. Без него мотор получит все 5 В и будет крутиться быстрее, чем задумано.</li>
+        <li>Все четыре резистора SMD, в макетку их не воткнуть: припаять поперёк двух соседних штырьков гребёнки или к обрезкам ножек, тогда встанут как обычные выводные.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Порядок работ</h2>
+  <ol class="steps">
+    <li><div><b>Прошить голую плату.</b> К ESP32 ничего не подключено, только USB от ноутбука. Бинарник <code>fullhaaboot_esp32.bin</code> из релиза 12.18.1 репозитория RavenSystem/haa (для одноядерной платы <code>fullhaaboot_esp32_1.bin</code>, ядра покажет первая команда).
+<pre><code>python3 -m esptool flash_id
+python3 -m esptool erase_flash
+python3 -m esptool -b 460800 --before=default_reset --after=hard_reset write_flash -fs 2MB -fm dio 0x0 fullhaaboot_esp32.bin</code></pre>
+      <p>Если esptool не стоит: <code>python3 -m pip install esptool</code>. Если плата не вошла в режим прошивки сама, зажать <code>BOOT</code> на время старта команды.</p></div></li>
+    <li><div><b>Первичная настройка по Wi-Fi.</b> На айфоне подключиться к сети <code>HAA-XXXXXX</code>, открыть <code>http://192.168.4.1:4567</code>. Указать домашнюю сеть 2.4 ГГц, вставить JSON ниже, Flash mode выбрать DIO, Save.
+      <p>Дальше плата сама скачивает основную прошивку с GitHub, поэтому в этой Wi-Fi нужен интернет. Занимает около 10 минут, плата перезагрузится сама.</p></div></li>
+    <li><div><b>Спарить и проверить уровни без силовой части.</b> Home.app → добавить аксессуар → «Всё равно добавить». Мультиметр на <code>V⎓</code>, чёрный щуп на GND платы:
+      <p>красный 100 % → на GPIO25 около 3.3 В, 0 % → 0 В, 50 % → около 1.6 В (прибор показывает среднее ШИМ). То же для 26 и 27. «Звёздное небо» вкл → на GPIO32 3.3 В. Если цвет в Home.app и номер пина не совпали, поправить порядок в <code>"g"</code> сейчас.</p></div></li>
+    <li><div><b>Собрать макетку по таблице.</b> USB от ESP32 отключён, адаптер в розетку не воткнут. Пройти чеклист ниже.</div></li>
+    <li><div><b>Включить.</b> Сначала адаптер на шину +5 В, потом USB в ESP32. Проверить каждый цвет по отдельности, потом белый и мотор. Если красный с зелёным поменялись местами, поменять номера в <code>"g"</code>, провода не трогать.</div></li>
+    <li><div><b>Замерить ток на белом.</b> Мультиметр на <code>A⎓ 10 A</code> в разрыв +5 В от адаптера. Это ответ, потянет ли адаптер 2 А лампу вместе с мотором и ESP32, и нужен ли другой номинал балластов.</div></li>
+  </ol>
+
+  <h2>Конфиг HAA</h2>
+  <p>Wi-Fi в JSON не входит, она задаётся на той же странице настройки. Элемент <code>io</code> для аппаратного ШИМ: <code>[[пины], 9, подтяжка, начальное значение, режим ШИМ, таймер]</code>; для простого выхода: <code>[[пин], 2, подтяжка, начальное значение]</code>. Частота аппаратного ШИМ по умолчанию 5 кГц, ключ <code>"y"</code> можно не задавать.</p>
+<pre><code>{
+  "c": {
+    "io": [ [[25,26,27], 9, 0, 0, 0, 0], [[32], 2, 0, 0] ]
+  },
+  "a": [ {
+    "t": 30,
+    "g": [25, 26, 27],
+    "es": [ { "t": 1, "0": { "r": [[32, 0]] }, "1": { "r": [[32, 1]] } } ]
+  } ]
+}</code></pre>
+  <p style="font-size:14px;color:var(--muted)">В Home.app получится один аксессуар с двумя плитками: лампа с цветовым кругом и выключатель проектора. Сверено с wiki HAA 04.09.2026: GPIOs-Configuration, Lightbulb, Switches, General-Configuration.</p>
+
+  <h2>Перед подачей питания</h2>
+  <ul class="check">
+    <li>В каждом из каналов R, G, B последовательно стоит балласт с донора. Без балласта светодиод не включать.</li>
+    <li>В цепи мотора между стоком Q-M и проводом мотора стоит 6R8 с донора.</li>
+    <li>У каждого из четырёх затворов есть 10 kΩ на шину «−».</li>
+    <li>D1 стоит полоской (катодом) к шине «+», анодом к стоку Q-M.</li>
+    <li>C1 стоит полоской (минусом) к шине «−».</li>
+    <li>Спинки четырёх IRLZ44N не касаются друг друга.</li>
+    <li>VIN ESP32 не подключён к шине «+», плата питается от USB.</li>
+    <li>GND ESP32 сидит на шине «−» вместе с GND адаптера.</li>
+    <li>Провод V светодиода (общий анод) на шине «+», а не на стоке. Остальные три провода опознаны и подписаны.</li>
+  </ul>
+
+  <h2>Укладка в ранец 63 × 52 × 20 мм</h2>
+  <p>Один слой, без бутерброда: ESP32 со срезанной гребёнкой вдоль длинной стенки, рядом полоска перфборда 24 × 58 мм с драйвером. Всё в масштабе, размеры деталей реальные: DevKit на 30 пинов 51 × 25.4, TO-220 плашмя 10.2 × 15.5, конденсатор 1000 µF лёжа 10 × 16.</p>
+  <figure>
+    <div class="scroll">
+    <svg class="schem" viewBox="0 0 900 420" role="img" aria-label="Вид сверху на отсек 63 на 52 мм: слева вдоль длинной стенки лежит ESP32 без гребёнки, антенной к торцевой стенке; справа полоска перфборда 24 на 58 мм с конденсатором на боку, четырьмя TO-220 плашмя спинками к наружной стенке и рядом мелких резисторов вдоль внутреннего края; сбоку разрез по высоте 20 мм">
+      <defs>
+        <pattern id="holes" width="15.24" height="15.24" patternUnits="userSpaceOnUse"><circle cx="7.6" cy="7.6" r="1.6" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.45"/></pattern>
+      </defs>
+      <!-- top view, scale 6 px/mm, origin (40,40) -->
+      <g transform="translate(40,40)">
+        <rect x="-6" y="-6" width="390" height="324" rx="8" fill="none" stroke="currentColor" stroke-width="3"/>
+        <rect x="0" y="0" width="378" height="312" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+        <text class="lbl mut" x="189" y="-12" text-anchor="middle">63 мм</text>
+        <text class="lbl mut" x="-14" y="160" text-anchor="middle" transform="rotate(-90 -14 160)">52 мм</text>
+
+        <!-- ESP32 51 x 25.4 at (1,0.8) -->
+        <g transform="translate(6,5)">
+          <rect x="0" y="0" width="306" height="152" rx="3" class="comp" stroke-width="2"/>
+          <rect x="60" y="24" width="150" height="104" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M14 40 h10 v72 h-10 M28 40 h10 v72 h-10 M42 40 h10 v72 h-10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="292" y="56" width="16" height="40" fill="currentColor" opacity="0.7"/>
+          <text class="ttl" x="135" y="84" text-anchor="middle">ESP32-WROOM-32</text>
+          <text class="lbl mut" x="135" y="100" text-anchor="middle">гребёнка срезана</text>
+          <text class="lbl mut" x="135" y="114" text-anchor="middle">снизу каптон</text>
+          <text class="lbl mut" x="34" y="132" text-anchor="middle">антенна</text>
+          <text class="lbl mut" x="300" y="112" text-anchor="middle">USB</text>
+          <circle cx="8" cy="8" r="6" fill="var(--amber)" opacity="0.6"/><circle cx="298" cy="144" r="6" fill="var(--amber)" opacity="0.6"/>
+          <circle cx="8" cy="144" r="6" fill="var(--amber)" opacity="0.6"/><circle cx="298" cy="8" r="6" fill="var(--amber)" opacity="0.6"/>
+        </g>
+
+        <!-- perfboard 24 x 58 at (2,27.5) -->
+        <g transform="translate(12,165)">
+          <rect x="0" y="0" width="348" height="144" class="comp" stroke-width="2"/>
+          <rect x="0" y="0" width="348" height="144" fill="url(#holes)"/>
+          <!-- capacitor lying: 10 x 16 at x 0..10, y 2.5..18.5 -->
+          <rect x="6" y="15" width="60" height="96" rx="6" class="comp" stroke-width="1.5"/>
+          <text class="lbl" x="36" y="58" text-anchor="middle">C1</text>
+          <text class="lbl mut" x="36" y="72" text-anchor="middle">на боку</text>
+          <!-- diode below cap -->
+          <rect x="12" y="120" width="48" height="18" rx="2" class="comp"/>
+          <text class="lbl" x="36" y="133" text-anchor="middle">D1</text>
+          <!-- four TO-220 flat: body 10.2 x 15.5 at y 8.5..24 (board coords), tabs to outer wall -->
+          <g>
+            <g transform="translate(66,51)"><rect x="0" y="0" width="61" height="93" class="comp" stroke-width="1.5"/><rect x="0" y="60" width="61" height="33" fill="currentColor" opacity="0.25"/><path d="M14 0 v-10 M30 0 v-10 M46 0 v-10" stroke="currentColor" stroke-width="2"/><text class="lbl" x="30" y="38" text-anchor="middle">Q-R</text></g>
+            <g transform="translate(136,51)"><rect x="0" y="0" width="61" height="93" class="comp" stroke-width="1.5"/><rect x="0" y="60" width="61" height="33" fill="currentColor" opacity="0.25"/><path d="M14 0 v-10 M30 0 v-10 M46 0 v-10" stroke="currentColor" stroke-width="2"/><text class="lbl" x="30" y="38" text-anchor="middle">Q-G</text></g>
+            <g transform="translate(206,51)"><rect x="0" y="0" width="61" height="93" class="comp" stroke-width="1.5"/><rect x="0" y="60" width="61" height="33" fill="currentColor" opacity="0.25"/><path d="M14 0 v-10 M30 0 v-10 M46 0 v-10" stroke="currentColor" stroke-width="2"/><text class="lbl" x="30" y="38" text-anchor="middle">Q-B</text></g>
+            <g transform="translate(276,51)"><rect x="0" y="0" width="61" height="93" class="comp" stroke-width="1.5"/><rect x="0" y="60" width="61" height="33" fill="currentColor" opacity="0.25"/><path d="M14 0 v-10 M30 0 v-10 M46 0 v-10" stroke="currentColor" stroke-width="2"/><text class="lbl" x="30" y="38" text-anchor="middle">Q-M</text></g>
+          </g>
+          <!-- resistor strip y 0..8.5 mm -> 0..51 px -->
+          <g>
+            <rect x="68" y="6" width="48" height="12" rx="2" class="comp"/><text class="lbl" x="92" y="15" text-anchor="middle" font-size="9">220</text>
+            <rect x="138" y="6" width="48" height="12" rx="2" class="comp"/><text class="lbl" x="162" y="15" text-anchor="middle" font-size="9">220</text>
+            <rect x="208" y="6" width="48" height="12" rx="2" class="comp"/><text class="lbl" x="232" y="15" text-anchor="middle" font-size="9">220</text>
+            <rect x="278" y="6" width="48" height="12" rx="2" class="comp"/><text class="lbl" x="302" y="15" text-anchor="middle" font-size="9">220</text>
+            <rect x="68" y="22" width="24" height="24" class="comp"/><text class="lbl" x="80" y="38" text-anchor="middle" font-size="8">10k</text>
+            <rect x="138" y="22" width="24" height="24" class="comp"/><text class="lbl" x="150" y="38" text-anchor="middle" font-size="8">10k</text>
+            <rect x="208" y="22" width="24" height="24" class="comp"/><text class="lbl" x="220" y="38" text-anchor="middle" font-size="8">10k</text>
+            <rect x="278" y="22" width="24" height="24" class="comp"/><text class="lbl" x="290" y="38" text-anchor="middle" font-size="8">10k</text>
+            <rect x="98" y="24" width="30" height="18" class="comp"/><text class="lbl" x="113" y="37" text-anchor="middle" font-size="8">5R6</text>
+            <rect x="168" y="24" width="30" height="18" class="comp"/><text class="lbl" x="183" y="37" text-anchor="middle" font-size="8">3R3</text>
+            <rect x="238" y="24" width="30" height="18" class="comp"/><text class="lbl" x="253" y="37" text-anchor="middle" font-size="8">3R3</text>
+            <rect x="308" y="24" width="30" height="18" class="comp"/><text class="lbl" x="323" y="37" text-anchor="middle" font-size="8">6R8</text>
+          </g>
+        </g>
+        <text class="lbl mut" x="189" y="328" text-anchor="middle">перфборд 24 × 58 из 30 × 70 · спинки TO-220 к наружной стенке, ноги вниз у корпуса</text>
+      </g>
+
+      <!-- side section, scale 6 px/mm, at x=520 -->
+      <g transform="translate(520,60)">
+        <text class="ttl" x="0" y="-24">Разрез по высоте</text>
+        <rect x="-6" y="-6" width="324" height="132" rx="6" fill="none" stroke="currentColor" stroke-width="3"/>
+        <text class="lbl mut" x="326" y="60" transform="rotate(90 326 60)" text-anchor="middle">20 мм</text>
+        <!-- floor at y=120 -->
+        <!-- ESP32 stack: glue 1 + pcb 1.6 + module 3.2 -->
+        <g>
+          <rect x="6" y="104" width="152" height="10" class="comp" fill="var(--amber)" opacity="0.5"/>
+          <rect x="6" y="94" width="152" height="10" class="comp"/>
+          <rect x="30" y="76" width="100" height="18" class="comp"/>
+          <text class="lbl" x="82" y="89" text-anchor="middle" font-size="9">модуль</text>
+          <text class="lbl mut" x="82" y="64" text-anchor="middle">ESP32 ≈ 6 мм</text>
+        </g>
+        <!-- driver stack: foam 1 + pcb 1.6 + TO220 4.5 ; 10k standing 12 -->
+        <g>
+          <rect x="170" y="108" width="140" height="6" class="comp" fill="var(--amber)" opacity="0.5"/>
+          <rect x="170" y="98" width="140" height="10" class="comp"/>
+          <rect x="180" y="71" width="60" height="27" class="comp"/>
+          <text class="lbl" x="210" y="88" text-anchor="middle" font-size="9">TO-220</text>
+          <rect x="260" y="26" width="18" height="72" class="comp"/>
+          <text class="lbl" x="269" y="20" text-anchor="middle" font-size="9">10k</text>
+          <text class="lbl mut" x="210" y="58" text-anchor="middle">7 мм</text>
+          <text class="lbl mut" x="300" y="12" text-anchor="end">самое высокое 15 мм</text>
+        </g>
+        <line x1="-6" y1="120" x2="318" y2="120" stroke="currentColor" stroke-width="3"/>
+        <text class="lbl mut" x="156" y="136" text-anchor="middle">дно ранца · оранжевое = термоклей / вспененный скотч</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>Слева вид сверху в масштабе, справа разрез. Запас по высоте 5 мм даже над стоящими 10 кОм, по длине 3 мм, по ширине около 2 мм между ESP32 и перфбордом. Если DevKit на 38 пинов (55 × 28 мм), полоска перфборда сужается до 21 мм, конденсатор тогда ставить не на боку, а лёжа вдоль, всё остальное так же.</figcaption>
+  </figure>
+  <ul class="check">
+    <li>Перфборд обрезать до 9 × 23 отверстий: процарапать ножом по ряду отверстий с двух сторон и переломить об край стола.</li>
+    <li>ESP32 антенной к торцевой стенке, USB к другой. Под платой полоска каптона, по углам четыре капли термоклея.</li>
+    <li>TO-220 класть плашмя спинкой к наружной стенке: спинка это сток, между соседними зазор 1.5 мм, и никакого металла рядом.</li>
+    <li>10 кОм ставить стоя, 220 Ом лёжа, балласты на двух штырьках стоя, C1 на боку в торце платы, D1 под ним.</li>
+    <li>Перфборд на дно через квадрат вспененного двустороннего скотча, жгут из 6 проводов к ESP32 прихватить каплей клея у обеих плат.</li>
+    <li>После укладки, до крышки: прозвонка +5 В ↔ GND и каждого GPIO ↔ +5 В, затем включение с открытой крышкой.</li>
+  </ul>
+
+  <p class="foot">Источник схемы и решений: README проекта astronaut-lamp, §3 и §6. Родную плату XKD1621 после выпайки разъёмов и балластов убрать в пакетик, путь обратим.</p>
+</main>
