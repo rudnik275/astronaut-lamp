@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "astro")(type "KiCad")(uri "${KIPRJMOD}/../lib/astro.pretty")(options "")(descr "посадочные места проекта"))
+)

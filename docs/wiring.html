@@ -1,0 +1,554 @@
+<title>Монтаж лампы-космонавта</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F3F4F2;
+    --ink: #1C2126;
+    --muted: #66707A;
+    --rule: #CBD1D6;
+    --well: #E8EBE9;
+    --pad: #B9C1C7;
+    --amber: #C06F12;
+    --amber-soft: #F3E3C8;
+    --red: #CF3F3F;
+    --green: #258A50;
+    --blue: #2F5FD0;
+    --violet: #6E48B8;
+    --copper: #A8632A;
+    --ok: #258A50;
+    --bad: #CF3F3F;
+    --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --cond: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #15181B; --ink: #E4E7EA; --muted: #98A3AD; --rule: #2E353C; --well: #1E2326; --pad: #3E474F;
+      --amber: #E9A24A; --amber-soft: #3A2C16; --red: #EE6A6A; --green: #4FC27C; --blue: #7A9CF2; --violet: #B497F0; --copper: #E0965A; --ok: #4FC27C; --bad: #EE6A6A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #15181B; --ink: #E4E7EA; --muted: #98A3AD; --rule: #2E353C; --well: #1E2326; --pad: #3E474F;
+    --amber: #E9A24A; --amber-soft: #3A2C16; --red: #EE6A6A; --green: #4FC27C; --blue: #7A9CF2; --violet: #B497F0; --copper: #E0965A; --ok: #4FC27C; --bad: #EE6A6A;
+  }
+
+  body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; margin: 0; }
+  main { max-width: 960px; margin: 0 auto; padding: 40px 24px 72px; }
+  h1, h2, h3 { font-family: var(--cond); font-weight: 600; text-wrap: balance; letter-spacing: 0.005em; margin: 0; }
+  h1 { font-size: 34px; line-height: 1.1; }
+  h2 { font-size: 22px; line-height: 1.2; margin-top: 48px; padding-bottom: 8px; border-bottom: 1.5px solid var(--ink); }
+  h3 { font-size: 17px; margin-top: 22px; }
+  p { max-width: 68ch; margin: 12px 0 0; }
+  .lede { color: var(--muted); margin-top: 6px; }
+  code, kbd { font-family: var(--mono); font-size: 0.92em; }
+  code { background: var(--well); padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
+  a { color: inherit; }
+  a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 32px; margin-top: 28px; border-top: 1.5px solid var(--ink); border-bottom: 1px solid var(--rule); }
+  .answers > div { padding: 14px 0 16px; }
+  .answers > div + div { border-left: 1px solid var(--rule); padding-left: 24px; }
+  @media (max-width: 640px) { .answers > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); } }
+  .answer { font-family: var(--cond); font-size: 22px; font-weight: 600; margin-top: 4px; }
+  .answers p { font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+  figure { margin: 20px 0 0; }
+  .scroll { overflow-x: auto; }
+  .board-svg { display: block; width: 100%; max-width: 920px; height: auto; min-width: 720px; color: var(--ink); }
+  .board-svg text { font-family: var(--mono); font-size: 11px; fill: currentColor; }
+  .board-svg .mut { fill: var(--muted); }
+  .board-svg .ttl { font-family: var(--cond); font-size: 13px; font-weight: 600; }
+  .board-svg .big { font-family: var(--cond); font-size: 15px; font-weight: 600; }
+  .board-svg .board { fill: var(--well); stroke: var(--ink); stroke-width: 1.5; }
+  .board-svg .hole { fill: var(--paper); stroke: var(--pad); stroke-width: 1.2; }
+  .board-svg .dead { fill: var(--rule); opacity: 0.5; }
+  .board-svg .body { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+  .board-svg .tab { fill: var(--pad); stroke: var(--ink); stroke-width: 1.5; }
+  .board-svg .leg { stroke: var(--ink); stroke-width: 2; fill: none; }
+  .board-svg .lead { stroke: var(--ink); stroke-width: 1.4; fill: none; }
+  .board-svg .part { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+  .board-svg .bend { stroke: var(--copper); stroke-width: 5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .board-svg .bus { stroke-width: 5; fill: none; stroke-linecap: round; }
+  .board-svg .tag { font-family: var(--mono); font-size: 9.5px; font-weight: 500; fill: var(--paper); }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 10px; max-width: 72ch; }
+
+  table { border-collapse: collapse; width: 100%; margin-top: 14px; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 0 12px 8px 0; border-bottom: 1px solid var(--ink); }
+  td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  td.n { white-space: nowrap; font-family: var(--mono); }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+  .tbl { overflow-x: auto; }
+
+  .panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px 28px; margin-top: 16px; }
+  .panel svg { display: block; width: 100%; height: auto; color: var(--ink); }
+  .panel svg text { font-family: var(--mono); font-size: 11px; fill: currentColor; }
+  .panel svg .pcb { fill: var(--well); stroke: var(--ink); stroke-width: 1.5; }
+  .panel svg .cu { fill: var(--pad); stroke: var(--ink); stroke-width: 1; }
+  .panel svg .wire { stroke: var(--copper); stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .panel svg .thin { stroke: var(--ink); stroke-width: 2; fill: none; stroke-linecap: round; }
+  .panel svg .sol { fill: var(--pad); stroke: var(--ink); stroke-width: 1; }
+  .panel svg .res { fill: var(--amber-soft); stroke: var(--ink); stroke-width: 1.5; }
+  .panel h3 { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; }
+  .panel h3 .v { font-family: var(--mono); font-size: 13px; padding: 1px 7px; border-radius: 3px; color: var(--paper); }
+  .panel h3 .v.ok { background: var(--ok); } .panel h3 .v.bad { background: var(--bad); } .panel h3 .v.so { background: var(--muted); }
+  .panel p { font-size: 14px; margin-top: 6px; }
+
+  ol.steps { margin: 12px 0 0; padding-left: 0; list-style: none; counter-reset: step; max-width: 74ch; }
+  ol.steps li { counter-increment: step; display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  ol.steps li::before { content: counter(step); font-family: var(--cond); font-weight: 600; font-size: 22px; line-height: 1; color: var(--amber); padding-top: 2px; }
+  ol.steps b { font-weight: 500; }
+  ol.steps p { margin-top: 4px; font-size: 14px; }
+  ul.check { margin: 12px 0 0; padding-left: 0; list-style: none; max-width: 72ch; }
+  ul.check li { padding: 7px 0 7px 30px; position: relative; border-bottom: 1px solid var(--rule); font-size: 14.5px; }
+  ul.check li::before { content: ""; position: absolute; left: 2px; top: 10px; width: 14px; height: 14px; border: 1.5px solid var(--ink); border-radius: 2px; }
+  ul.plain { margin: 10px 0 0; padding-left: 20px; max-width: 70ch; font-size: 14.5px; }
+  ul.plain li { margin-top: 5px; }
+  .status { font-family: var(--mono); font-size: 12px; margin-top: 10px; color: var(--muted); }
+  .status.bad { color: var(--bad); }
+  .foot { margin-top: 44px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 12px; }
+</style>
+
+<main>
+  <div class="eyebrow">astronaut-lamp · драйвер на перфборде 3×7 · 08.09.2026</div>
+  <h1>Монтаж лампы-космонавта</h1>
+  <p class="lede">Куда идёт каждый провод и что с чем спаять на перфборде 10 × 24 отверстия. Картинки вместо схемы: вид сверху, где стоят детали, и вид снизу, где паять.</p>
+
+  <div class="answers">
+    <div>
+      <div class="eyebrow">Ноги двух соединённых деталей</div>
+      <div class="answer">В соседние отверстия, соединять загнутой ногой снизу</div>
+      <p>Каждая нога в своё отверстие. На стороне пайки одну ногу загибаешь плашмя до пятачка соседа и паяешь в обеих точках. Две ноги в одно отверстие не совать.</p>
+    </div>
+    <div>
+      <div class="eyebrow">Проводов снаружи</div>
+      <div class="answer">14, все заходят сверху в ряды J и H</div>
+      <p>6 к ESP32, 4 к светодиоду, 2 к мотору, 2 от питания 5 В. Номер провода одинаковый на всех картинках и в таблице.</p>
+    </div>
+  </div>
+
+  <h2>Как читать плату</h2>
+  <p>Плата лежит длинной стороной горизонтально. Ряды <b>A…J</b> считаются от края, к которому смотрят спинки IRLZ44N (в корпусе это наружная стенка), ряд <b>J</b> ближе к ESP32. Колонки <b>1…24</b> слева направо, если смотреть сверху. Отверстие называется рядом и колонкой: <code>H2</code> это ряд H, колонка 2.</p>
+  <p><b>Первым делом пометь колонку 1 маркером</b> с обеих сторон платы, у ряда A. Снизу плата зеркальна, и без метки легко спаять всё в отражении. Вид снизу на этой странице уже отзеркален: там колонка 24 слева.</p>
+  <ul class="plain">
+    <li>Схема остаётся прежней, со страницы <a href="schematic.html">«Схема лампы-космонавта»</a>. Одно отличие: 10 кОм стоит с той стороны 220 Ом, где GPIO, а не у затвора. Электрически это то же самое, зато не нужен лишний мост.</li>
+    <li>Плата используется целиком, все 10 × 24 отверстия. Поля обрезать позже, под корпус, после пайки платы; отсек ранца тогда считать под 25.4 × 61 мм, а не 24 × 58, как на странице схемы.</li>
+    <li>Спинка TO-220 (металл, это сток) ложится на верхние пятачки рядов A–B. Туда ничего не вставлять и снизу через эти ряды ничего не тянуть.</li>
+  </ul>
+
+  <h2>Карта проводов</h2>
+  <figure>
+    <div class="scroll"><svg id="wiremap" class="board-svg" viewBox="0 0 960 540" role="img" aria-label="Перфборд сверху с четырнадцатью пронумерованными точками входа проводов в рядах J и H; ниже ESP32 DevKit с шестью подсвеченными пинами D25, D26, D27, D32, GND, VIN и кабели светодиода, мотора и питания, линии соединяют каждый источник с его отверстием"></svg></div>
+    <figcaption>ESP32 нарисован сверху, антенной вправо: так шесть нужных пинов оказываются в одном ряду. Положение платы в корпусе может быть любым, карта только про то, какой пин в какое отверстие. На столе провод 6 (VIN) не подключать: ESP32 питается от своего USB, а провода 13 и 14 идут от адаптера 5 В, не от USB-C.</figcaption>
+  </figure>
+  <div class="tbl"><table id="wiretable"></table></div>
+
+  <h2>Вид сверху: где стоят детали</h2>
+  <figure>
+    <div class="scroll"><svg id="top" class="board-svg" viewBox="0 0 700 372" role="img" aria-label="Перфборд 10 на 24 сверху: четыре IRLZ44N плашмя ногами в ряд H, под каждым в рядах I и J стоят 10 кОм, 220 Ом и балласт, справа конденсатор на боку и диод, точки входа проводов подписаны номерами"></svg></div>
+    <figcaption>Все резисторы стоят вертикально: нижняя нога в отверстие под корпусом, верхняя загибается вниз в соседнее отверстие, куда показывает линия. У IRLZ44N надпись смотрит вверх, ноги согнуты вниз сразу после широкой части, тогда спинка заканчивается у края платы. Кружок с номером это провод, номера те же, что на карте.</figcaption>
+  </figure>
+
+  <h2>Вид снизу: что с чем спаять</h2>
+  <figure>
+    <div class="scroll"><svg id="bottom" class="board-svg" viewBox="0 0 700 392" role="img" aria-label="Тот же перфборд снизу, зеркально: медные линии показывают, какая нога куда загнута, чёрная шина GND идёт по ряду G через всю плату, оранжевая шина плюс пять вольт по ряду I в колонках 21–24, балласты SMD лежат между пятачками рядов I и J"></svg></div>
+    <figcaption>Зеркально, колонка 24 слева, метка маркером у правого края. Медная линия это нога детали, загнутая плашмя по плате от своего отверстия (точка) до пятачка соседа (кольцо); паять в обеих точках. Толстая линия по ряду G это голый лужёный провод, шина GND; по ряду I справа такая же шина +5 В. Если балласты с донора без ножек, они ложатся SMD-стороной прямо на пятачки I и J снизу, как нарисовано; если ножки уже припаяны, ставь их сверху стоя в те же отверстия.</figcaption>
+  </figure>
+  <div id="status" class="status"></div>
+  <div class="tbl"><table id="nettable"></table></div>
+
+  <h2>Как паять на перфборде</h2>
+  <p>Плата двусторонняя с металлизированными отверстиями: припой затекает насквозь, пятачок есть с обеих сторон и от нагрева не отслаивается. Это прощает многое, кроме одного: любой голый металл, лежащий на пятачке, с ним соединён. Поэтому шина проводом и спинка TO-220 всегда лежат только там, где эта цепь и должна быть.</p>
+  <div class="panels">
+    <div class="panel">
+      <svg viewBox="0 0 280 150" role="img" aria-label="Разрез платы: две ноги втиснуты в одно отверстие, крест">
+        <rect x="10" y="78" width="260" height="14" class="pcb"/>
+        <rect x="128" y="74" width="24" height="22" class="cu"/>
+        <rect x="135" y="72" width="10" height="26" fill="var(--paper)" stroke="none"/>
+        <path d="M137 20 V98 M143 20 V98" class="thin"/>
+        <ellipse cx="140" cy="99" rx="11" ry="5" class="sol"/>
+        <path d="M137 20 l-30 -6 M143 20 l30 -6" class="thin"/>
+        <text x="60" y="30" class="mut">деталь A</text>
+        <text x="185" y="30" class="mut">деталь B</text>
+        <text x="140" y="130" text-anchor="middle" class="mut">одно отверстие, две ноги</text>
+      </svg>
+      <h3><span class="v bad">нет</span>Две ноги в одно отверстие</h3>
+      <p>Отверстие 1 мм на две ноги не рассчитано: вторая нога входит с натягом или не входит, припой не затекает, а перепаять такую пару потом невозможно, не вынув обе.</p>
+    </div>
+    <div class="panel">
+      <svg viewBox="0 0 280 150" role="img" aria-label="Разрез платы: две ноги в соседних отверстиях, левая загнута снизу к правому пятачку, припой в обеих точках, галочка">
+        <rect x="10" y="78" width="260" height="14" class="pcb"/>
+        <rect x="88" y="74" width="24" height="22" class="cu"/>
+        <rect x="168" y="74" width="24" height="22" class="cu"/>
+        <rect x="96" y="72" width="8" height="26" fill="var(--paper)" stroke="none"/>
+        <rect x="176" y="72" width="8" height="26" fill="var(--paper)" stroke="none"/>
+        <path d="M100 20 V104 H180" class="wire"/>
+        <path d="M180 20 V104" class="thin"/>
+        <ellipse cx="100" cy="100" rx="12" ry="6" class="sol"/>
+        <ellipse cx="180" cy="102" rx="12" ry="6" class="sol"/>
+        <text x="100" y="14" text-anchor="middle" class="mut">A</text>
+        <text x="180" y="14" text-anchor="middle" class="mut">B</text>
+        <text x="140" y="130" text-anchor="middle" class="mut">нога A загнута к пятачку B</text>
+      </svg>
+      <h3><span class="v ok">да</span>Соседние отверстия, нога загнута снизу</h3>
+      <p>Обе ноги через свои отверстия. Снизу ногу A прижимаешь плашмя к плате, ведёшь до пятачка B, паяешь у A и у B, лишнее откусываешь после пайки. Нога работает как дорожка, держится намертво. Так сделаны все соединения на виде снизу.</p>
+    </div>
+    <div class="panel">
+      <svg viewBox="0 0 280 150" role="img" aria-label="Вид снизу: два соседних пятачка соединены каплей припоя">
+        <rect x="10" y="20" width="260" height="110" class="pcb"/>
+        <circle cx="105" cy="75" r="16" class="cu"/><circle cx="105" cy="75" r="6" fill="var(--paper)" stroke="none"/>
+        <circle cx="175" cy="75" r="16" class="cu"/><circle cx="175" cy="75" r="6" fill="var(--paper)" stroke="none"/>
+        <path d="M105 60 C130 58 150 58 175 60 L175 90 C150 92 130 92 105 90 Z" class="sol"/>
+        <circle cx="45" cy="75" r="16" class="cu"/><circle cx="45" cy="75" r="6" fill="var(--paper)" stroke="none"/>
+        <circle cx="235" cy="75" r="16" class="cu"/><circle cx="235" cy="75" r="6" fill="var(--paper)" stroke="none"/>
+        <text x="140" y="120" text-anchor="middle" class="mut">капля припоя между двумя пятачками</text>
+      </svg>
+      <h3><span class="v so">иногда</span>Перемычка припоем</h3>
+      <p>Только между двумя соседними пятачками и только с флюсом: припоя нужно много, он норовит стянуться в две отдельные капли. Годится, если забыл оставить ногу длинной. Не основной способ.</p>
+    </div>
+    <div class="panel">
+      <svg viewBox="0 0 280 150" role="img" aria-label="Вид снизу: голый провод лежит вдоль ряда пятачков, припаян к трём из них">
+        <rect x="10" y="20" width="260" height="110" class="pcb"/>
+        <g>
+          <circle cx="40" cy="75" r="14" class="cu"/><circle cx="80" cy="75" r="14" class="cu"/><circle cx="120" cy="75" r="14" class="cu"/><circle cx="160" cy="75" r="14" class="cu"/><circle cx="200" cy="75" r="14" class="cu"/><circle cx="240" cy="75" r="14" class="cu"/>
+        </g>
+        <path d="M22 75 H258" class="wire"/>
+        <ellipse cx="40" cy="75" rx="15" ry="9" class="sol"/><ellipse cx="120" cy="75" rx="15" ry="9" class="sol"/><ellipse cx="240" cy="75" rx="15" ry="9" class="sol"/>
+        <text x="40" y="112" text-anchor="middle" class="mut">нога</text><text x="120" y="112" text-anchor="middle" class="mut">нога</text><text x="240" y="112" text-anchor="middle" class="mut">провод</text>
+        <text x="140" y="45" text-anchor="middle" class="mut">голый лужёный провод по ряду = шина</text>
+      </svg>
+      <h3><span class="v ok">да</span>Шина голым проводом</h3>
+      <p>Для GND и +5 В. Кусок голого лужёного провода (обрезок ноги резистора или жила от dupont без изоляции) ложится по ряду снизу, к нему припаивается каждая нога, которой нужна эта цепь. Провод не должен заходить на пятачки чужих рядов.</p>
+    </div>
+    <div class="panel">
+      <svg viewBox="0 0 280 150" role="img" aria-label="Разрез: резистор стоит вертикально над левым отверстием, верхняя нога загнута дугой вниз в правое отверстие">
+        <rect x="10" y="98" width="260" height="14" class="pcb"/>
+        <rect x="108" y="94" width="24" height="22" class="cu"/><rect x="158" y="94" width="24" height="22" class="cu"/>
+        <rect x="116" y="92" width="8" height="26" fill="var(--paper)" stroke="none"/><rect x="166" y="92" width="8" height="26" fill="var(--paper)" stroke="none"/>
+        <path d="M120 120 V76" class="thin"/>
+        <rect x="110" y="34" width="20" height="42" rx="6" class="res"/>
+        <path d="M120 34 V22 C120 12 170 12 170 22 V120" class="thin"/>
+        <ellipse cx="120" cy="118" rx="11" ry="5" class="sol"/><ellipse cx="170" cy="118" rx="11" ry="5" class="sol"/>
+        <text x="60" y="60" class="mut">резистор</text><text x="60" y="74" class="mut">стоя</text>
+        <text x="140" y="142" text-anchor="middle" class="mut">верхняя нога дугой в соседнее отверстие</text>
+      </svg>
+      <h3><span class="v ok">да</span>Резистор стоя</h3>
+      <p>Так стоят все 220 Ом и 10 кОм. Нижняя нога прямо в отверстие под корпусом, верхнюю загибаешь на 180° и опускаешь в соседнее отверстие. Занимает две дырки вместо четырёх, а 1-ваттные 10 кОм лёжа просто не поместились бы.</p>
+    </div>
+    <div class="panel">
+      <svg viewBox="0 0 280 150" role="img" aria-label="Вид снизу: SMD-резистор лежит между двумя соседними пятачками, его торцы припаяны к пятачкам">
+        <rect x="10" y="20" width="260" height="110" class="pcb"/>
+        <circle cx="105" cy="75" r="16" class="cu"/><circle cx="105" cy="75" r="6" fill="var(--paper)" stroke="none"/>
+        <circle cx="175" cy="75" r="16" class="cu"/><circle cx="175" cy="75" r="6" fill="var(--paper)" stroke="none"/>
+        <rect x="118" y="63" width="44" height="24" rx="2" class="res"/>
+        <rect x="112" y="63" width="10" height="24" class="sol"/><rect x="158" y="63" width="10" height="24" class="sol"/>
+        <text x="140" y="80" text-anchor="middle">5R6</text>
+        <text x="140" y="120" text-anchor="middle" class="mut">SMD между двумя соседними пятачками</text>
+      </svg>
+      <h3><span class="v ok">да</span>SMD-балласт без ножек</h3>
+      <p>Резисторы с донора можно не сажать на ножки: залудить оба пятачка, положить резистор между ними снизу, прогреть торец, пока он не сядет, потом второй. Шаг 2.54 мм для корпуса 1206 и даже 0805 в самый раз.</p>
+    </div>
+  </div>
+  <h3>Правила, которые экономят переделку</h3>
+  <ul class="plain">
+    <li>Ноги откусывать после пайки, не до. Ногу, которая должна лечь мостом к соседу, вообще не откусывать, пока не припаяна в обеих точках.</li>
+    <li>Ставить детали от низких к высоким: сначала резисторы, потом диод, потом TO-220, конденсатор и провода последними. Иначе высокие мешают паять низкие.</li>
+    <li>Хорошая пайка выглядит как блестящий конус вокруг ноги, припой затёк в отверстие. Матовый шарик, который сидит на ноге и не касается пятачка, надо прогреть ещё раз с флюсом.</li>
+    <li>Паяльник 320–350 °C для обычного припоя, 2–3 секунды на точку. Флюс-гель на каждый пятачок, смывать потом не обязательно, но спиртом чище.</li>
+    <li>Провода: зачистить 4 мм, скрутить, залудить, вставить сверху, снизу загнуть к соседнему пятачку по карте, припаять. Провод из dupont-шлейфа с откушенным разъёмом для этого в самый раз.</li>
+    <li>После каждой цепи прозвонить мультиметром (режим •))) между точками, которые должны быть соединены, и между соседними, которые не должны. Особенно между рядами G и H под TO-220: там три ноги подряд с шагом 2.54.</li>
+  </ul>
+
+  <h2>Порядок пайки</h2>
+  <ol class="steps">
+    <li><div><b>Разложить всё без пайки.</b><p>Вставить четыре IRLZ44N в ряд H, согнув ноги вниз на 4 мм от корпуса: спинка должна заканчиваться у края ряда A, не дальше 1 мм за краем. Приложить конденсатор на бок в колонках 21–24: его ноги должны доставать до <code>H22</code> и <code>H24</code>. Если у тебя DevKit на 38 пинов или конденсатор длиннее 17 мм, скажи, раскладку сдвину.</p></div></li>
+    <li><div><b>Пометить колонку 1 маркером</b> с обеих сторон и один раз сверить: вид снизу на этой странице зеркальный, метка там справа.</div></li>
+    <li><div><b>Резисторы каналов, по одному блоку за раз.</b><p>Блок Q-R это колонки 1–5, Q-G 6–10, Q-B 11–15, Q-M 16–20. В каждом: 220 Ом стоя в <code>I(c+1)</code>, верхняя нога в <code>J(c+1)</code>, припаять, откусить. 10 кОм стоя в <code>I(c)</code>, верхняя в <code>J(c)</code>: верхнюю ногу загнуть вправо к <code>J(c+1)</code> и припаять к ноге 220; нижнюю ногу не откусывать, а загнуть вверх через <code>H(c)</code> до <code>G(c)</code>, она станет отводом на шину GND. Балласт: SMD снизу между <code>I(c+3)</code> и <code>J(c+3)</code>, либо с ножками стоя сверху в те же отверстия. Здесь c это первая колонка блока.</p></div></li>
+    <li><div><b>IRLZ44N.</b><p>Ноги в <code>H(c+1)</code>, <code>H(c+2)</code>, <code>H(c+3)</code>, надпись вверх, спинка к ряду A. Снизу: ногу G загнуть вниз к <code>I(c+1)</code> и припаять к 220; ногу D загнуть вниз к <code>I(c+2)</code> и дальше вправо к <code>I(c+3)</code>, припаять к балласту; ногу S загнуть вверх к <code>G(c+3)</code>. Пропаять и в родных отверстиях ряда H.</p></div></li>
+    <li><div><b>Правый край.</b><p>D1 стоя: анод (нога без полоски) в <code>I20</code>, полоска сверху, катод дугой в <code>I21</code>; анод снизу загнуть вниз к <code>J20</code>. C1 на бок: плюс в <code>H22</code>, минус (полоска на корпусе) в <code>H24</code>; снизу плюс загнуть вниз к <code>I22</code>, минус вверх к <code>G24</code>.</p></div></li>
+    <li><div><b>Шины.</b><p>Голый провод по ряду G снизу от колонки 1 до 24, припаять к каждому загнутому концу, который на него ложится: <code>G1 G4 G6 G9 G11 G14 G16 G19 G24</code>. Второй кусок по ряду I от <code>I21</code> до <code>I24</code>, припаять к катоду D1 и к загнутому плюсу C1.</p></div></li>
+    <li><div><b>Провода по карте.</b><p>Все сверху, каждый снизу загибается к соседнему пятачку, как в таблице. Провода 5 и 14 (GND) ложатся на шину G, провода 6, 10, 12, 13 (+5) на шину I. Провода к ESP32 пока с dupont-мамой на конце, чтобы снимать с пинов; в корпусе, когда гребёнка будет срезана, припаять к плате.</p></div></li>
+    <li><div><b>Прозвонка, потом питание.</b><p>Чеклист ниже. Включать по порядку со страницы схемы: сначала адаптер на +5, потом USB в ESP32, каждый цвет отдельно, потом белый, потом мотор.</p></div></li>
+  </ol>
+
+  <h2>Перед подачей питания</h2>
+  <ul class="check">
+    <li>Между шиной G (GND) и шиной I (+5) прибор не пищит. Между любым пятачком ряда J в колонках 3, 8, 13, 18 (GPIO) и шиной +5 тоже.</li>
+    <li>В каждом блоке нога S (третья слева) звонится на шину G, нога G (первая) не звонится ни на G, ни на +5.</li>
+    <li>Метка маркером совпала: провод 1 с пина D25 пришёл в третью колонку от метки, а не в двадцать вторую.</li>
+    <li>D1: полоска смотрит на +5 (нога в <code>I21</code>), анод на мотор. C1: полоска на корпусе у ноги в <code>H24</code>, то есть на GND.</li>
+    <li>Балласты стоят во всех четырёх блоках: 5R6 в колонке 4, 3R3 в 9 и 14, 6R8 в 19. Без балласта светодиод не включать.</li>
+    <li>Спинки IRLZ44N не касаются друг друга и не заходят на пятачки правее колонки 20.</li>
+    <li>На столе: провод 6 (VIN) не подключён, провод 5 (GND ESP32) подключён обязательно.</li>
+  </ul>
+
+  <p class="foot">Схема и решения: README проекта astronaut-lamp §3 и <a href="schematic.html">docs/schematic.html</a>. Раскладка на этой странице генерируется из одного списка соединений; статус проверки связей выводится под видом снизу.</p>
+</main>
+
+<script>
+(function () {
+  const ROWS = 'ABCDEFGHIJ', NCOL = 24;
+  const ri = r => ROWS.indexOf(r);
+  const id = (r, c) => r + c;
+  const rowOf = p => p[0], colOf = p => +p.slice(1);
+
+  const V = {
+    r: 'var(--red)', g: 'var(--green)', b: 'var(--blue)', m: 'var(--violet)',
+    gnd: 'var(--ink)', p5: 'var(--amber)', cu: 'var(--copper)'
+  };
+  const blocks = [
+    { q: 'Q-R', c0: 1,  gpio: 'D25', bal: '5R6', load: 'R светодиода', ch: 'r', wG: 1, wL: 7 },
+    { q: 'Q-G', c0: 6,  gpio: 'D26', bal: '3R3', load: 'G светодиода', ch: 'g', wG: 2, wL: 8 },
+    { q: 'Q-B', c0: 11, gpio: 'D27', bal: '3R3', load: 'B светодиода', ch: 'b', wG: 3, wL: 9 },
+    { q: 'Q-M', c0: 16, gpio: 'D32', bal: '6R8', load: 'мотор, провод 1', ch: 'm', wG: 4, wL: 11 },
+  ];
+
+  // ---------- model ----------
+  const nets = new Map();   // name -> {color}
+  const pads = new Map();   // "H2" -> {net, items:[]}
+  const bends = [];         // {path:[ids], what, net}
+  const buses = [];         // {net,row,c1,c2}
+  const conflicts = [];
+  function net(name, color) { if (!nets.has(name)) nets.set(name, { color }); return name; }
+  function pad(p, n, item) {
+    let e = pads.get(p);
+    if (!e) { e = { net: n, items: [] }; pads.set(p, e); }
+    else if (e.net !== n) conflicts.push(p + ': ' + e.net + ' и ' + n);
+    if (item) e.items.push(item);
+    return e;
+  }
+  function bend(path, what, n) { path.forEach(p => pad(p, n)); bends.push({ path, what, net: n }); }
+  function bus(n, row, c1, c2) { for (let c = c1; c <= c2; c++) pad(id(row, c), n); buses.push({ net: n, row, c1, c2 }); }
+
+  const GND = net('GND', V.gnd), P5 = net('+5 В', V.p5);
+  const wires = [];
+  blocks.forEach(b => {
+    const c = b.c0, q = b.q, col = V[b.ch];
+    const GATE = net('затвор ' + q, col), GPIO = net('GPIO ' + q, col), DRAIN = net('сток ' + q, col), LOAD = net('нагрузка ' + q, col);
+    pad(id('H', c + 1), GATE, 'нога G ' + q);
+    pad(id('H', c + 2), DRAIN, 'нога D ' + q);
+    pad(id('H', c + 3), GND, 'нога S ' + q);
+    pad(id('I', c), GND, '10 кОм, нижняя нога');
+    pad(id('J', c), GPIO, '10 кОм, верхняя нога');
+    pad(id('I', c + 1), GATE, '220 Ом, нижняя нога');
+    pad(id('J', c + 1), GPIO, '220 Ом, верхняя нога');
+    pad(id('I', c + 3), DRAIN, b.bal + ', нижняя');
+    pad(id('J', c + 3), LOAD, b.bal + ', верхняя');
+    pad(id('J', c + 2), GPIO, 'провод ' + b.wG + ' (' + b.gpio + ')');
+    pad(id('J', c + 4), LOAD, 'провод ' + b.wL + ' (' + b.load + ')');
+    bend([id('H', c + 1), id('I', c + 1)], 'нога G ' + q + ' вниз, к 220 Ом', GATE);
+    bend([id('H', c + 2), id('I', c + 2), id('I', c + 3)], 'нога D ' + q + ' вниз и вправо, к ' + b.bal, DRAIN);
+    bend([id('H', c + 3), id('G', c + 3)], 'нога S ' + q + ' вверх, на шину GND', GND);
+    bend([id('I', c), id('H', c), id('G', c)], '10 кОм нижняя нога вверх через ' + id('H', c) + ', на шину GND', GND);
+    bend([id('J', c), id('J', c + 1)], '10 кОм верхняя нога вправо, к 220 Ом', GPIO);
+    bend([id('J', c + 2), id('J', c + 1)], 'провод ' + b.wG + ' влево, к 220 Ом', GPIO);
+    bend([id('J', c + 4), id('J', c + 3)], 'провод ' + b.wL + ' влево, к ' + b.bal, LOAD);
+    wires.push({ n: b.wG, from: 'ESP32, пин ' + b.gpio, pad: id('J', c + 2), to: id('J', c + 1), color: col, src: 'esp', pin: b.gpio });
+    wires.push({ n: b.wL, from: b.ch === 'm' ? 'мотор, любой из двух проводов' : 'светодиод, провод ' + b.load.split(' ')[0], pad: id('J', c + 4), to: id('J', c + 3), color: col, src: b.ch === 'm' ? 'motor' : 'led', pin: b.ch === 'm' ? 'M' : b.load.split(' ')[0] });
+  });
+  const LOADM = 'нагрузка Q-M';
+  pad('I20', LOADM, 'D1, анод');            bend(['I20', 'J20'], 'D1 анод вниз, к проводу 11', LOADM);
+  pad('I21', P5, 'D1, катод (полоска)');
+  pad('H22', P5, 'C1, плюс');               bend(['H22', 'I22'], 'C1 плюс вниз, на шину +5', P5);
+  pad('H24', GND, 'C1, минус (полоска)');   bend(['H24', 'G24'], 'C1 минус вверх, на шину GND', GND);
+  pad('J21', P5, 'провод 12 (мотор)');      bend(['J21', 'I21'], 'провод 12 вверх, на шину +5', P5);
+  pad('J22', P5, 'провод 10 (V светодиода)'); bend(['J22', 'I22'], 'провод 10 вверх, на шину +5', P5);
+  pad('J23', P5, 'провод 13 (+5 питания)'); bend(['J23', 'I23'], 'провод 13 вверх, на шину +5', P5);
+  pad('J24', P5, 'провод 6 (VIN ESP32)');   bend(['J24', 'I24'], 'провод 6 вверх, на шину +5', P5);
+  pad('H21', GND, 'провод 14 (GND питания)'); bend(['H21', 'G21'], 'провод 14 вверх, на шину GND', GND);
+  pad('H23', GND, 'провод 5 (GND ESP32)');  bend(['H23', 'G23'], 'провод 5 вверх, на шину GND', GND);
+  bus(GND, 'G', 1, 24);
+  bus(P5, 'I', 21, 24);
+  wires.push(
+    { n: 5,  from: 'ESP32, пин GND', pad: 'H23', to: 'G23', color: V.gnd, src: 'esp', pin: 'GND' },
+    { n: 6,  from: 'ESP32, пин VIN (только в корпусе)', pad: 'J24', to: 'I24', color: V.p5, src: 'esp', pin: 'VIN' },
+    { n: 10, from: 'светодиод, провод V (общий анод)', pad: 'J22', to: 'I22', color: V.p5, src: 'led', pin: 'V' },
+    { n: 12, from: 'мотор, второй провод', pad: 'J21', to: 'I21', color: V.p5, src: 'motor', pin: 'M' },
+    { n: 13, from: 'питание 5 В, плюс', pad: 'J23', to: 'I23', color: V.p5, src: 'pwr', pin: '+5' },
+    { n: 14, from: 'питание 5 В, минус', pad: 'H21', to: 'G21', color: V.gnd, src: 'pwr', pin: 'GND' },
+  );
+  wires.sort((a, b) => a.n - b.n);
+
+  // ---------- connectivity check ----------
+  const parent = new Map();
+  const find = p => { while (parent.get(p) !== p) { parent.set(p, parent.get(parent.get(p))); p = parent.get(p); } return p; };
+  const union = (a, b) => { parent.set(find(a), find(b)); };
+  pads.forEach((_, p) => parent.set(p, p));
+  bends.forEach(b => { for (let i = 1; i < b.path.length; i++) union(b.path[i - 1], b.path[i]); });
+  buses.forEach(b => { for (let c = b.c1; c < b.c2; c++) union(id(b.row, c), id(b.row, c + 1)); });
+  const problems = conflicts.slice();
+  const rootNets = new Map();
+  pads.forEach((e, p) => { const r = find(p); if (!rootNets.has(r)) rootNets.set(r, new Set()); rootNets.get(r).add(e.net); });
+  rootNets.forEach(s => { if (s.size > 1) problems.push('замкнуты цепи: ' + [...s].join(' + ')); });
+  const netRoots = new Map();
+  pads.forEach((e, p) => { if (!netRoots.has(e.net)) netRoots.set(e.net, new Set()); netRoots.get(e.net).add(find(p)); });
+  netRoots.forEach((s, n) => { if (s.size > 1) problems.push('цепь «' + n + '» разорвана на ' + s.size + ' куска'); });
+  const st = document.getElementById('status');
+  st.textContent = problems.length ? 'ПРОВЕРКА СВЯЗЕЙ: ' + problems.join('; ') : 'проверка связей: ' + nets.size + ' цепей, ' + pads.size + ' задействованных отверстий, ' + bends.length + ' загнутых ног, разрывов и замыканий нет';
+  if (problems.length) st.classList.add('bad');
+
+  // ---------- drawing helpers ----------
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  function tag(x, y, n, color) {
+    return `<circle cx="${x}" cy="${y}" r="8.5" fill="${color}" stroke="var(--paper)" stroke-width="1.5"/><text x="${x}" y="${y + 3.4}" text-anchor="middle" class="tag">${n}</text>`;
+  }
+  function boardBase(g, mirror) {
+    const { P, X, Y } = g;
+    let s = '';
+    s += `<rect x="${Math.min(X(1), X(NCOL)) - P / 2}" y="${Y('A') - P / 2}" width="${NCOL * P}" height="${ROWS.length * P}" class="board"/>`;
+    if (!mirror) s += `<rect x="${X(1) - P / 2}" y="${Y('A') - P / 2}" width="${20 * P}" height="${2 * P}" class="dead"/>`;
+    for (const r of ROWS) for (let c = 1; c <= NCOL; c++) s += `<circle cx="${X(c)}" cy="${Y(r)}" r="3.3" class="hole"/>`;
+    const xl = Math.min(X(1), X(NCOL)) - P - 4, xr = Math.max(X(1), X(NCOL)) + P + 4;
+    for (const r of ROWS) { s += `<text x="${xl}" y="${Y(r) + 4}" text-anchor="middle" class="ttl">${r}</text><text x="${xr}" y="${Y(r) + 4}" text-anchor="middle" class="ttl">${r}</text>`; }
+    for (let c = 1; c <= NCOL; c++) s += `<text x="${X(c)}" y="${Y('J') + P + 2}" text-anchor="middle" class="mut">${c}</text>`;
+    const mx = X(1), my = Y('A') - P / 2 - 3;
+    s += `<path d="M${mx - 6} ${my - 8} L${mx + 6} ${my - 8} L${mx} ${my} Z" fill="var(--amber)"/>`;
+    return s;
+  }
+
+  // ---------- top view ----------
+  (function drawTop() {
+    const P = 24, OX = 52, OY = 82;
+    const X = c => OX + (c - 1) * P, Y = r => OY + ri(r) * P;
+    const g = { P, X, Y };
+    let s = boardBase(g, false);
+    s += `<text x="${X(1) - 4}" y="${Y('A') - P / 2 - 16}" class="mut">метка маркером: колонка 1</text>`;
+    s += `<text x="${X(24) + P / 2}" y="${Y('A') - P / 2 - 16}" text-anchor="end" class="mut">↑ наружная стенка · ряды A–B под спинками, не вставлять</text>`;
+    s += `<text x="${X(24) + P / 2}" y="${Y('J') + P + 24}" text-anchor="end" class="mut">↓ сторона ESP32, сюда выходят провода</text>`;
+    blocks.forEach(b => {
+      const c = b.c0, yH = Y('H');
+      const xl = X(c), xr = X(c + 4);
+      const yTab = yH - 7.6 * P, yBody = yH - 5.5 * P, yLeg = yH - 1.55 * P;
+      s += `<rect x="${xl + 3}" y="${yTab}" width="${xr - xl - 6}" height="${yBody - yTab}" class="tab"/><circle cx="${(xl + xr) / 2}" cy="${yTab + 18}" r="7" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.2"/>`;
+      s += `<rect x="${xl}" y="${yBody}" width="${xr - xl}" height="${yLeg - yBody}" rx="2" class="body"/>`;
+      s += `<text x="${(xl + xr) / 2}" y="${yBody + 30}" text-anchor="middle" class="big">${b.q}</text><text x="${(xl + xr) / 2}" y="${yBody + 46}" text-anchor="middle" class="mut">IRLZ44N</text><text x="${(xl + xr) / 2}" y="${yBody + 60}" text-anchor="middle" class="mut">надпись вверх</text>`;
+      ['G', 'D', 'S'].forEach((l, i) => {
+        const x = X(c + 1 + i);
+        s += `<path d="M${x} ${yLeg} V${yH}" class="leg"/><text x="${x}" y="${yLeg - 5}" text-anchor="middle" class="ttl">${l}</text>`;
+      });
+      const stand = (col, lbl, r) => `<path d="M${X(col)} ${Y('I')} V${Y('J')}" class="lead"/><circle cx="${X(col)}" cy="${Y('J')}" r="3" fill="var(--ink)"/><circle cx="${X(col)}" cy="${Y('I')}" r="${r}" class="part"/><text x="${X(col)}" y="${Y('I') + 3.5}" text-anchor="middle" style="font-size:8.5px">${lbl}</text>`;
+      s += stand(c, '10k', 9.5) + stand(c + 1, '220', 9) + stand(c + 3, b.bal, 9.5);
+    });
+    {
+      const x0 = X(21), x1 = X(25), y0 = Y('A') - 0.35 * P, y1 = Y('A') + 6.55 * P;
+      s += `<rect x="${x0}" y="${y0}" width="${x1 - x0}" height="${y1 - y0}" rx="9" class="part"/>`;
+      s += `<rect x="${X(24) - 4}" y="${y0 + 2}" width="8" height="${y1 - y0 - 4}" fill="var(--pad)"/>`;
+      s += `<text x="${X(23)}" y="${Y('C') + 4}" text-anchor="middle" class="big">C1</text><text x="${X(23)}" y="${Y('D') + 4}" text-anchor="middle" class="mut">1000 µF</text><text x="${X(23)}" y="${Y('E') + 4}" text-anchor="middle" class="mut">на боку</text><text x="${X(24) + 2}" y="${Y('F') + 4}" text-anchor="middle" class="mut">−</text>`;
+      s += `<path d="M${X(22)} ${y1} V${Y('H')}" class="lead"/><path d="M${X(24)} ${y1} V${Y('H')}" class="lead"/>`;
+      s += `<text x="${X(22)}" y="${Y('H') + 16}" text-anchor="middle" class="ttl">+</text><text x="${X(24)}" y="${Y('H') + 16}" text-anchor="middle" class="ttl">−</text>`;
+    }
+    s += `<path d="M${X(20)} ${Y('I')} H${X(21)}" class="lead"/><circle cx="${X(21)}" cy="${Y('I')}" r="3" fill="var(--ink)"/><circle cx="${X(20)}" cy="${Y('I')}" r="9" class="part"/><rect x="${X(20) - 9}" y="${Y('I') - 2}" width="18" height="4" fill="var(--ink)"/><text x="${X(20)}" y="${Y('I') - 12}" text-anchor="middle" class="ttl">D1</text><text x="${X(21) + 6}" y="${Y('I') - 6}" class="mut" style="font-size:9px">K</text>`;
+    wires.forEach(w => { s += tag(X(colOf(w.pad)), Y(rowOf(w.pad)), w.n, w.color); });
+    document.getElementById('top').innerHTML = s;
+  })();
+
+  // ---------- bottom view (mirrored) ----------
+  (function drawBottom() {
+    const P = 24, OX = 52, OY = 82;
+    const X = c => OX + (NCOL - c) * P, Y = r => OY + ri(r) * P;
+    const g = { P, X, Y };
+    let s = boardBase(g, true);
+    s += `<text x="${X(24) - 4}" y="${Y('A') - P / 2 - 16}" class="big">ВИД СНИЗУ · зеркально · колонка 24 слева</text>`;
+    s += `<text x="${X(1) + 4}" y="${Y('A') - P / 2 - 16}" text-anchor="end" class="mut">метка ↑</text>`;
+    s += `<text x="${X(10.5)}" y="${Y('B') + 4}" text-anchor="middle" class="mut">сверху здесь лежат спинки: снизу через ряды A–B ничего не тянуть</text>`;
+    pads.forEach((e, p) => { s += `<circle cx="${X(colOf(p))}" cy="${Y(rowOf(p))}" r="6.5" fill="none" stroke="${nets.get(e.net).color}" stroke-width="1.6" opacity="0.9"/>`; });
+    buses.forEach(b => { s += `<path d="M${X(b.c1)} ${Y(b.row)} H${X(b.c2)}" class="bus" stroke="${nets.get(b.net).color}"/>`; });
+    s += `<text x="${X(12.5)}" y="${Y('G') - 9}" text-anchor="middle" class="ttl">шина GND: голый провод по ряду G, колонки 1–24</text>`;
+    s += `<text x="${X(22.5)}" y="${Y('J') + P + 30}" text-anchor="middle" class="ttl" fill="var(--amber)">шина +5 В: ряд I, 21–24</text>`;
+    blocks.forEach(b => {
+      const x = X(b.c0 + 3), y0 = Y('I'), y1 = Y('J');
+      s += `<rect x="${x - 6}" y="${y0 + 5}" width="12" height="${y1 - y0 - 10}" rx="1.5" fill="var(--amber-soft)" stroke="var(--ink)" stroke-width="1.2"/><text x="${x}" y="${(y0 + y1) / 2 + 3}" text-anchor="middle" style="font-size:7.5px">${b.bal}</text>`;
+    });
+    bends.forEach(b => {
+      const pts = b.path.map(p => [X(colOf(p)), Y(rowOf(p))]);
+      s += `<path d="M${pts.map(q => q.join(' ')).join(' L')}" class="bend"/>`;
+      s += `<circle cx="${pts[0][0]}" cy="${pts[0][1]}" r="5" fill="${V.cu}" stroke="var(--paper)" stroke-width="1"/>`;
+      const e = pts[pts.length - 1];
+      s += `<circle cx="${e[0]}" cy="${e[1]}" r="5" fill="var(--paper)" stroke="${V.cu}" stroke-width="2.2"/>`;
+    });
+    blocks.forEach(b => {
+      ['G', 'D', 'S'].forEach((l, i) => { const x = X(b.c0 + 1 + i); s += `<text x="${x + 8}" y="${Y('H') - 8}" class="ttl" style="font-size:10px">${l}</text>`; });
+      s += `<text x="${X(b.c0 + 2)}" y="${Y('J') + P + 30}" text-anchor="middle" class="mut">${b.q} · ноги S D G</text>`;
+    });
+    wires.forEach(w => { s += tag(X(colOf(w.pad)), Y(rowOf(w.pad)), w.n, w.color); });
+    document.getElementById('bottom').innerHTML = s;
+  })();
+
+  // ---------- wire map ----------
+  (function drawMap() {
+    const P = 18, OX = 60, OY = 42;
+    const X = c => OX + (c - 1) * P, Y = r => OY + ri(r) * P;
+    let s = '';
+    s += `<rect x="${X(1) - P / 2}" y="${Y('A') - P / 2}" width="${NCOL * P}" height="${ROWS.length * P}" class="board"/>`;
+    for (const r of ROWS) for (let c = 1; c <= NCOL; c++) s += `<circle cx="${X(c)}" cy="${Y(r)}" r="2.4" class="hole"/>`;
+    for (const r of ROWS) s += `<text x="${X(1) - P - 2}" y="${Y(r) + 4}" text-anchor="middle" class="ttl">${r}</text>`;
+    for (let c = 1; c <= NCOL; c++) if (c === 1 || c % 2 === 0) s += `<text x="${X(c)}" y="${Y('A') - P / 2 - 6}" text-anchor="middle" class="mut">${c}</text>`;
+    blocks.forEach(b => { const xl = X(b.c0), xr = X(b.c0 + 4), yH = Y('H'); s += `<rect x="${xl}" y="${yH - 5.5 * P}" width="${xr - xl}" height="${3.95 * P}" rx="2" fill="none" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/><text x="${(xl + xr) / 2}" y="${yH - 3.3 * P}" text-anchor="middle" class="mut">${b.q}</text>`; });
+    s += `<rect x="${X(21)}" y="${Y('A') - 0.35 * P}" width="${4 * P}" height="${6.9 * P}" rx="7" fill="none" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/><text x="${X(23)}" y="${Y('D') + 4}" text-anchor="middle" class="mut">C1</text>`;
+    s += `<text x="${X(1) - 4}" y="${Y('A') - P / 2 - 22}" class="ttl">перфборд, вид сверху</text>`;
+
+    const EX = 40, EY = 330, EW = 361, EH = 180, pinX0 = EX + 38, pinP = 18;
+    const topRow = ['VIN', 'GND', 'D13', 'D12', 'D14', 'D27', 'D26', 'D25', 'D33', 'D32', 'D35', 'D34', 'VN', 'VP', 'EN'];
+    const botRow = ['3V3', 'GND', 'D15', 'D2', 'D4', 'RX2', 'TX2', 'D5', 'D18', 'D19', 'D21', 'RX0', 'TX0', 'D22', 'D23'];
+    const hot = { D25: [1, V.r], D26: [2, V.g], D27: [3, V.b], D32: [4, V.m], GND: [5, V.gnd], VIN: [6, V.p5] };
+    s += `<rect x="${EX}" y="${EY}" width="${EW}" height="${EH}" rx="4" class="part"/>`;
+    s += `<rect x="${EX + 110}" y="${EY + 38}" width="150" height="84" rx="2" fill="none" stroke="var(--ink)" stroke-width="1.2"/><text x="${EX + 185}" y="${EY + 76}" text-anchor="middle" class="ttl">ESP32-WROOM-32</text><text x="${EX + 185}" y="${EY + 92}" text-anchor="middle" class="mut">DevKit 30 pin, вид сверху</text>`;
+    s += `<path d="M${EX + 314} ${EY + 50} h10 v56 h-10 M${EX + 328} ${EY + 50} h10 v56 h-10 M${EX + 342} ${EY + 50} h10 v56 h-10" fill="none" stroke="var(--ink)" stroke-width="1.2"/><text x="${EX + 333}" y="${EY + 124}" text-anchor="middle" class="mut">антенна</text>`;
+    s += `<rect x="${EX - 8}" y="${EY + 70}" width="16" height="40" fill="var(--pad)" stroke="var(--ink)" stroke-width="1"/><text x="${EX + 2}" y="${EY + 126}" text-anchor="middle" class="mut">USB</text>`;
+    topRow.forEach((n, i) => {
+      const x = pinX0 + i * pinP, h = hot[n];
+      s += `<rect x="${x - 4}" y="${EY - 6}" width="8" height="14" fill="${h ? h[1] : 'var(--pad)'}" stroke="var(--ink)" stroke-width="1"/>`;
+      s += `<text transform="translate(${x + 3.5} ${EY + 14}) rotate(90)" style="font-size:9.5px;${h ? 'font-weight:500' : ''}" fill="${h ? 'currentColor' : 'var(--muted)'}">${n}</text>`;
+      if (h) s += tag(x, EY - 20, h[0], h[1]);
+    });
+    botRow.forEach((n, i) => {
+      const x = pinX0 + i * pinP;
+      s += `<rect x="${x - 4}" y="${EY + EH - 8}" width="8" height="14" fill="var(--pad)" stroke="var(--ink)" stroke-width="1"/>`;
+      s += `<text transform="translate(${x + 3.5} ${EY + EH - 50}) rotate(90)" style="font-size:9px" fill="var(--muted)">${n}</text>`;
+    });
+    function box(x, y, w, h, title, sub, pins) {
+      let t = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" class="part"/><text x="${x + w / 2}" y="${y + h - 26}" text-anchor="middle" class="ttl">${title}</text><text x="${x + w / 2}" y="${y + h - 11}" text-anchor="middle" class="mut">${sub}</text>`;
+      pins.forEach((p, i) => { const px = x + (i + 1) * w / (pins.length + 1); t += `<rect x="${px - 4}" y="${y - 6}" width="8" height="14" fill="${p.color}" stroke="var(--ink)" stroke-width="1"/><text x="${px}" y="${y + 24}" text-anchor="middle" style="font-size:10px;font-weight:500">${p.pin}</text>` + tag(px, y - 20, p.n, p.color); p.x = px; p.y = y - 6; });
+      return t;
+    }
+    const led = wires.filter(w => w.src === 'led').sort((a, b) => 'VRGB'.indexOf(a.pin) - 'VRGB'.indexOf(b.pin));
+    const mot = wires.filter(w => w.src === 'motor');
+    const pwr = wires.filter(w => w.src === 'pwr');
+    s += box(520, 330, 160, 90, 'светодиод', 'кабель из головы', led);
+    s += box(710, 330, 90, 90, 'мотор', 'проектор', mot);
+    s += box(830, 330, 110, 90, 'питание 5 В', 'USB-C / адаптер', pwr);
+    const espPins = {}; topRow.forEach((n, i) => { espPins[n] = pinX0 + i * pinP; });
+    wires.forEach(w => {
+      const x1 = X(colOf(w.pad)), y1 = Y(rowOf(w.pad));
+      let x2, y2;
+      if (w.src === 'esp') { x2 = espPins[w.pin]; y2 = EY - 30; } else { x2 = w.x; y2 = w.y - 30; }
+      const ym = (y1 + y2) / 2 + 40;
+      s += `<path d="M${x1} ${y1} C${x1} ${ym} ${x2} ${ym} ${x2} ${y2}" fill="none" stroke="${w.color}" stroke-width="2" opacity="0.85"/>`;
+    });
+    wires.forEach(w => { s += tag(X(colOf(w.pad)), Y(rowOf(w.pad)), w.n, w.color); });
+    document.getElementById('wiremap').innerHTML = s;
+  })();
+
+  // ---------- tables ----------
+  (function tables() {
+    const swatch = c => `<span class="sw" style="background:${c}"></span>`;
+    let t = '<thead><tr><th>№</th><th>Откуда</th><th>В отверстие</th><th>Снизу загнуть к</th><th>Что это за цепь</th></tr></thead><tbody>';
+    wires.forEach(w => {
+      const e = pads.get(w.pad);
+      t += `<tr><td class="n">${swatch(w.color)}${w.n}</td><td>${esc(w.from)}</td><td class="n">${w.pad}</td><td class="n">${w.to}</td><td>${esc(e.net)}</td></tr>`;
+    });
+    document.getElementById('wiretable').innerHTML = t + '</tbody>';
+
+    let n = '<thead><tr><th>Цепь</th><th>Отверстия и что в них</th><th>Чем соединено снизу</th></tr></thead><tbody>';
+    [...nets.keys()].forEach(name => {
+      const list = [];
+      pads.forEach((e, p) => { if (e.net === name && e.items.length) list.push(`<code>${p}</code> ${esc(e.items.join(' + '))}`); });
+      const how = bends.filter(b => b.net === name).map(b => `<code>${b.path[0]}→${b.path[b.path.length - 1]}</code> ${esc(b.what)}`);
+      const bs = buses.filter(b => b.net === name).map(b => `шина по ряду ${b.row}, колонки ${b.c1}–${b.c2}`);
+      n += `<tr><td class="n">${swatch(nets.get(name).color)}${esc(name)}</td><td>${list.join('<br>')}</td><td>${bs.concat(how).join('<br>')}</td></tr>`;
+    });
+    document.getElementById('nettable').innerHTML = n + '</tbody>';
+  })();
+})();
+</script>

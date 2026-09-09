@@ -1,0 +1,8 @@
+out/*.dsn
+out/*.ses
+out/*.json
+out/sch.net
+out/*.kicad_prl
+out/*-backups/
+out/gerbers/
+out/fp-info-cache
